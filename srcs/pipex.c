@@ -6,7 +6,7 @@
 /*   By: abonnard <abonnard@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/17 16:26:44 by abonnard          #+#    #+#             */
-/*   Updated: 2025/02/02 15:29:25 by abonnard         ###   ########.fr       */
+/*   Updated: 2025/02/02 15:46:11 by abonnard         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,21 @@ static void	init_pipex_again(t_pipex *pipex, char **envp)
 	}
 }
 
-static void	init_pipex(t_pipex *pipex, char **argv, char **envp)
+static void	check_arguments(int argc, char **envp)
+{
+	if (argc != 5)
+	{
+		pipex_perror(NULL, INV_ARGS);
+		exit(1);
+	}
+	if (!envp || !*envp)
+	{
+		pipex_perror(NULL, NO_PATH);
+		exit(1);
+	}
+}
+
+static void	initialize_pipex(t_pipex *pipex, char **argv, char **envp)
 {
 	pipex->infile = open(argv[1], O_RDONLY);
 	if (pipex->infile < 0)
@@ -50,38 +64,34 @@ static void	init_pipex(t_pipex *pipex, char **argv, char **envp)
 	init_pipex_again(pipex, envp);
 }
 
+static void	fork_processes(t_pipex *pipex, char **argv, char **envp)
+{
+	pipex->pid1 = fork();
+	if (pipex->pid1 < 0)
+	{
+		pipex_perror(NULL, FORK_ERR);
+		exit(1);
+	}
+	if (pipex->pid1 == 0)
+		child_process(argv, envp, pipex);
+	pipex->pid2 = fork();
+	if (pipex->pid2 < 0)
+	{
+		pipex_perror(NULL, FORK_ERR);
+		exit(1);
+	}
+	if (pipex->pid2 == 0)
+		parent_process(argv, envp, pipex);
+}
+
 int	main(int argc, char **argv, char **envp)
 {
 	t_pipex	pipex;
 	int		status;
 
-	if (argc != 5)
-	{
-		pipex_perror(NULL, INV_ARGS);
-		exit(1);
-	}
-	if (!envp || !*envp)
-	{
-		pipex_perror(NULL, NO_PATH);
-		exit(1);
-	}
-	init_pipex(&pipex, argv, envp);
-	pipex.pid1 = fork();
-	if (pipex.pid1 < 0)
-	{
-		pipex_perror(NULL, FORK_ERR);
-		exit(1);
-	}
-	if (pipex.pid1 == 0)
-		child_process(argv, envp, &pipex);
-	pipex.pid2 = fork();
-	if (pipex.pid2 < 0)
-	{
-		pipex_perror(NULL, FORK_ERR);
-		exit(1);
-	}
-	if (pipex.pid2 == 0)
-		parent_process(argv, envp, &pipex);
+	check_arguments(argc, envp);
+	initialize_pipex(&pipex, argv, envp);
+	fork_processes(&pipex, argv, envp);
 	close_pipes(&pipex);
 	waitpid(pipex.pid1, NULL, 0);
 	waitpid(pipex.pid2, &status, 0);
