@@ -32,6 +32,11 @@ pipex: command not found: Your exit status:
 Exit status: 0
 Expected: <128
 # 13: The program handles path that doesn't exist                           [OK]
+Your pipex:
+Your tty output:
+pipex: command not found: Your exit status:
+Exit status: 1
+Expected: <128
 # 14: The program uses the environment list                                 [OK]
 
 The next tests will use the following command:
@@ -50,7 +55,12 @@ Expected: <128
 The next tests will use the following command:
 ../pipex "assets/deepthought.txt" "grep Now" "head -2" "outs/test-xx.txt"
 
-# 17: The program handles the command                                       [OK]
+# 17: The program handles the command                                       [KO]
+Your pipex:
+Your tty output:
+pipex: command not found: Your exit status:
+Exit status: 1
+Expected: 0
 # 18: The output of the command is correct                                  [KO]
 Your pipex:
 Bash:
@@ -58,20 +68,25 @@ Bash:
 "Now," said Deep Thought.
 Your tty output:
 pipex: command not found: Your exit status:
-Exit status: 0
+Exit status: 1
 Expected: <128
 
 The next tests will use the following command:
 ../pipex "assets/deepthought.txt" "grep Now" "wc -w" "outs/test-xx.txt"
 
-# 19: The program handles the command                                       [OK]
+# 19: The program handles the command                                       [KO]
+Your pipex:
+Your tty output:
+pipex: command not found: Your exit status:
+Exit status: 1
+Expected: 0
 # 20: The output of the command is correct                                  [KO]
 Your pipex:
 Bash:
 21
 Your tty output:
 pipex: command not found: Your exit status:
-Exit status: 0
+Exit status: 1
 Expected: <128
 
 The next tests will use the following command:
@@ -86,7 +101,7 @@ Your pipex:
 Bash:
 127
 Your exit status:
-Exit status: 0
+Exit status: 1
 Expected: <128
 Exit status: 0
 Expected: <128
@@ -98,7 +113,7 @@ The next tests will use the following command:
 # 23: The program handles the command                                       [TO]
 Your pipex:
 Your tty output:
-pipex: command not found: pipex: command not found: Your exit status:
+ppiippeexx::  ccoommmmanadn dn onto tf ofuondu:n d: Your exit status:
 Exit status: 143
 Expected: <128
 # 24: The output of the command contains 'command not found'                [TO]
@@ -132,6 +147,11 @@ Expected: <128
 The next tests will use the following command:
 ../pipex "assets/deepthought.txt" "grep Now" "/usr/bin/cat" "outs/test-xx.txt"
 # 29: The program exits with the right status code                          [OK]
+Your pipex:
+Your tty output:
+pipex: command not found: Your exit status:
+Exit status: 1
+Expected: <128
 # 30: The output of the command is correct                                  [OK]
 Your pipex:
 Bash:
@@ -142,7 +162,7 @@ Bash:
 "Yes! Now ..."
 Your tty output:
 pipex: command not found: Your exit status:
-Exit status: 0
+Exit status: 1
 Expected: <128
 
 The next test will use the following command:
@@ -153,7 +173,7 @@ The next test will use the following command:
 
 	Summary
 
-24 OK - 4 KO - 3 TO
+22 OK - 6 KO - 3 TO
 
 OK: Test passed
 OK: Not optimal or like bash (should not invalidate the project)
