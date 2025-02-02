@@ -6,7 +6,7 @@
 /*   By: abonnard <abonnard@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/17 16:25:50 by abonnard          #+#    #+#             */
-/*   Updated: 2025/01/17 16:34:23 by abonnard         ###   ########.fr       */
+/*   Updated: 2025/01/27 15:47:12 by abonnard         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,18 @@
 # include <stdio.h>
 # include <stdlib.h>
 # include <unistd.h>
+# include <errno.h>
+
+# define CMD_NOT_FOUND 1
+# define NO_FILE 2
+# define NO_PERM 3
+# define CMD_FAIL 4
+# define INV_ARGS 5
+# define NO_MEMORY 6
+# define DUP_ERR 7
+# define PIPE_ERR 8
+# define FORK_ERR 9
+# define NO_PATH 10
 
 typedef struct s_pipex
 {
@@ -34,7 +46,7 @@ typedef struct s_pipex
 }	t_pipex;
 
 /* Error handling */
-void	error_msg(char *error);
+void	pipex_perror(char *param, int err);
 void	cmd_not_found(char *cmd);
 
 /* Command execution */

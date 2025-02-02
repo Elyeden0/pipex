@@ -6,32 +6,64 @@
 /*   By: abonnard <abonnard@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/17 16:28:22 by abonnard          #+#    #+#             */
-/*   Updated: 2025/01/17 16:33:33 by abonnard         ###   ########.fr       */
+/*   Updated: 2025/01/27 15:46:15 by abonnard         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/pipex.h"
 
-void	error_msg(char *error)
+void cmd_not_found(char *cmd)
 {
-	perror(error);
-	exit(1);
+	pipex_perror(cmd, CMD_NOT_FOUND);
+	exit(128);
 }
 
-void	cmd_not_found(char *cmd)
+void	pipex_perror(char *param, int err)
 {
-	ft_putstr_fd("Error: command not found: ", 2);
-	ft_putstr_fd(cmd, 2);
+	ft_putstr_fd("pipex: ", 2);
+	if (err == CMD_NOT_FOUND)
+		ft_putstr_fd("command not found: ", 2);
+	if (err == NO_FILE)
+		ft_putstr_fd("no such file or directory: ", 2);
+	if (err == NO_PERM)
+		ft_putstr_fd("permission denied: ", 2);
+	if (err == CMD_FAIL)
+		ft_putstr_fd("command failed: ", 2);
+	if (err == INV_ARGS)
+		ft_putstr_fd("invalid number of arguments", 2);
+	if (err == NO_MEMORY)
+		ft_putstr_fd("no memory left on device", 2);
+	if (err == DUP_ERR)
+		ft_putstr_fd("could not dup fd", 2);
+	if (err == PIPE_ERR)
+		ft_putstr_fd("could not create pipe", 2);
+	if (err == FORK_ERR)
+		ft_putstr_fd("could not fork process", 2);
+	if (err == NO_PATH)
+		ft_putstr_fd("PATH variable is not set", 2);
+	if (param && (err == CMD_NOT_FOUND || err == NO_FILE \
+			|| err == NO_PERM || err == CMD_FAIL))
+		ft_putstr_fd(param, 2);
 	ft_putstr_fd("\n", 2);
 }
 
 char	*find_path(char **envp)
 {
-	while (*envp && ft_strncmp("PATH=", *envp, 5))
-		envp++;
-	if (!*envp)
-		error_msg("Error: PATH not found in environment");
-	return (*envp + 5);
+	int		i;
+	char	*path;
+
+	i = 0;
+	while (envp && envp[i])
+	{
+		if (ft_strncmp("PATH=", envp[i], 5) == 0)
+		{
+			path = envp[i] + 5;
+			if (*path)
+				return (path);
+		}
+		i++;
+	}
+	return (NULL);
 }
 
 char	*get_cmd(char **paths, char *cmd)
@@ -42,9 +74,13 @@ char	*get_cmd(char **paths, char *cmd)
 	while (*paths)
 	{
 		tmp = ft_strjoin(*paths, "/");
+		if (!tmp)
+			return (NULL);
 		command = ft_strjoin(tmp, cmd);
 		free(tmp);
-		if (access(command, F_OK) == 0)
+		if (!command)
+			return (NULL);
+		if (access(command, F_OK | X_OK) == 0)
 			return (command);
 		free(command);
 		paths++;

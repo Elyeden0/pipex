@@ -14,7 +14,7 @@ BOX_BOTTOM = ╚═════════════════════�
 
 # Directories
 SRC_DIR  = srcs
-BONUS_DIR = bonus
+#BONUS_DIR = bonus
 OBJ_DIR  = objs
 LIBFT_DIR = libft
 
@@ -24,7 +24,7 @@ LIBS     = -L$(LIBFT_DIR) -lft
 
 # Includes
 INCLUDES = -I$(LIBFT_DIR) -Iinclude
-BONUS_INCLUDES = -Ibonus_include -I$(LIBFT_DIR)
+#BONUS_INCLUDES = -Ibonus_include -I$(LIBFT_DIR)
 
 # Source files and object files
 SRCS     = $(SRC_DIR)/free.c \
@@ -32,21 +32,21 @@ SRCS     = $(SRC_DIR)/free.c \
 			$(SRC_DIR)/process.c \
 			$(SRC_DIR)/tools.c
 
-BONUS_SRCS =
+#BONUS_SRCS =
 
 OBJS     = $(SRCS:$(SRC_DIR)/%.c=$(OBJ_DIR)/%.o)
 
-BONUS_OBJS = $(BONUS_SRCS:$(BONUS_DIR)/%.c=$(OBJ_DIR)/%.o)
+#BONUS_OBJS = $(BONUS_SRCS:$(BONUS_DIR)/%.c=$(OBJ_DIR)/%.o)
 
 # Output executable
 NAME     = pipex
-BONUS_NAME = pipex_bonus
+#BONUS_NAME = pipex_bonus
 
 # Rules
 all: $(LIBFT) $(NAME)
 
 # Make bonus version
-bonus: $(LIBFT) $(BONUS_NAME)
+#bonus: $(LIBFT) $(BONUS_NAME)
 
 # Compile libft if not already compiled
 $(LIBFT):
@@ -62,7 +62,7 @@ $(OBJ_DIR):
 $(OBJ_DIR)/%.o: $(SRC_DIR)/%.c | $(OBJ_DIR)
 	@$(CC) $(CFLAGS) $(INCLUDES) -c $< -o $@
 
-$(OBJ_DIR)/%.o: $(BONUS_DIR)/%.c | $(OBJ_DIR)
+#$(OBJ_DIR)/%.o: $(BONUS_DIR)/%.c | $(OBJ_DIR)
 	@$(CC) $(CFLAGS) $(BONUS_INCLUDES) -c $< -o $@
 
 # Link the executable
@@ -72,11 +72,11 @@ $(NAME): $(OBJS) $(LIBFT)
 	@echo "$(GREEN)║ Executable compiled. ║$(RESET)"
 	@echo "$(GREEN)$(BOX_BOTTOM)$(RESET)"
 
-$(BONUS_NAME): $(BONUS_OBJS) $(LIBFT)
-	@$(CC) $(CFLAGS) $(BONUS_OBJS) $(LIBS) -o $(BONUS_NAME)
-	@echo "$(GREEN)$(BOX_TOP)"
-	@echo "║ Bonus ver. compiled. ║$(RESET)"
-	@echo "$(GREEN)$(BOX_BOTTOM)$(RESET)"
+#$(BONUS_NAME): $(BONUS_OBJS) $(LIBFT)
+#	@$(CC) $(CFLAGS) $(BONUS_OBJS) $(LIBS) -o $(BONUS_NAME)
+#	@echo "$(GREEN)$(BOX_TOP)"
+#	@echo "║ Bonus ver. compiled. ║$(RESET)"
+#	@echo "$(GREEN)$(BOX_BOTTOM)$(RESET)"
 
 # Clean object files
 clean:
