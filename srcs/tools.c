@@ -6,16 +6,16 @@
 /*   By: abonnard <abonnard@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/17 16:28:22 by abonnard          #+#    #+#             */
-/*   Updated: 2025/02/02 15:09:58 by abonnard         ###   ########.fr       */
+/*   Updated: 2025/02/02 15:32:18 by abonnard         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/pipex.h"
 
-void cmd_not_found(char *cmd)
+void	cmd_not_found(char *cmd)
 {
 	pipex_perror(cmd, CMD_NOT_FOUND);
-	exit(128);
+	exit(127);
 }
 
 void	pipex_perror(char *param, int err)

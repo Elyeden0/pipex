@@ -6,7 +6,7 @@
 /*   By: abonnard <abonnard@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/17 16:26:44 by abonnard          #+#    #+#             */
-/*   Updated: 2025/02/02 15:14:17 by abonnard         ###   ########.fr       */
+/*   Updated: 2025/02/02 15:29:25 by abonnard         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -88,5 +88,5 @@ int	main(int argc, char **argv, char **envp)
 	free_parent(&pipex);
 	if (WIFEXITED(status))
 		return (WEXITSTATUS(status));
-	return (128);
+	return (127);
 }
