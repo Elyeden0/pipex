@@ -6,7 +6,7 @@
 /*   By: abonnard <abonnard@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/17 16:25:50 by abonnard          #+#    #+#             */
-/*   Updated: 2025/01/27 15:47:12 by abonnard         ###   ########.fr       */
+/*   Updated: 2025/02/03 21:18:39 by abonnard         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,6 +43,7 @@ typedef struct s_pipex
 	pid_t	pid1;
 	pid_t	pid2;
 	int		pipe[2];
+	int		here_doc;
 }	t_pipex;
 
 /* Error handling */
