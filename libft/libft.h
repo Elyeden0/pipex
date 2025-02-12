@@ -6,7 +6,7 @@
 /*   By: abonnard <abonnard@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/05 16:54:31 by abonnard          #+#    #+#             */
-/*   Updated: 2024/12/16 15:02:33 by abonnard         ###   ########.fr       */
+/*   Updated: 2025/02/12 12:38:46 by abonnard         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,8 @@
 # define LIBFT_H
 
 # include <stddef.h>
+# include "ft_printf.h"
+# include "get_next_line.h"
 
 int		ft_atoi(const char *str);
 int		ft_isdigit(int c);

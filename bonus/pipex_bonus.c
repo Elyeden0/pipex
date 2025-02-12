@@ -1,16 +1,16 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   pipex.c                                            :+:      :+:    :+:   */
+/*   pipex_bonus.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: abonnard <abonnard@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/01/17 16:26:44 by abonnard          #+#    #+#             */
-/*   Updated: 2025/02/03 21:18:12 by abonnard         ###   ########.fr       */
+/*   Created: 2025/02/12 12:11:24 by abonnard          #+#    #+#             */
+/*   Updated: 2025/02/12 12:25:08 by abonnard         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../include/pipex.h"
+#include "../include/pipex_bonus.h"
 
 static void	init_pipex_again(t_pipex *pipex, char **envp)
 {
@@ -46,16 +46,27 @@ static void	initialize_pipex(t_pipex *pipex, char **argv, char **envp, int argc)
 {
     if (ft_strncmp(argv[1], "here_doc", 8) == 0)
     {
+        char *line;
+        int tmp_fd;
+
         pipex->here_doc = 1;
-        pipex->infile = open(".here_doc_tmp", O_WRONLY | O_CREAT | O_TRUNC, 0644);
-        if (pipex->infile < 0)
+        tmp_fd = open(".here_doc_tmp", O_WRONLY | O_CREAT | O_TRUNC, 0644);
+        if (tmp_fd < 0)
         {
             pipex_perror(".here_doc_tmp", NO_FILE);
             exit(1);
         }
-        write(pipex->infile, argv[2], ft_strlen(argv[2]));
-        write(pipex->infile, "\n", 1);
-        close(pipex->infile);
+        while ((line = get_next_line(STDIN_FILENO)))
+        {
+            if (ft_strncmp(line, argv[2], ft_strlen(argv[2])) == 0 && line[ft_strlen(argv[2])] == '\n')
+            {
+                free(line);
+                break;
+            }
+            write(tmp_fd, line, ft_strlen(line));
+            free(line);
+        }
+        close(tmp_fd);
         pipex->infile = open(".here_doc_tmp", O_RDONLY);
         pipex->outfile = open(argv[argc - 1], O_WRONLY | O_CREAT | O_APPEND, 0644);
     }
@@ -77,12 +88,21 @@ static void	fork_processes(t_pipex *pipex, char **argv, char **envp, int argc)
 {
     int i;
     int pipes[2 * (argc - 4)];
+    int j;
 
-    for (i = 0; i < argc - 4; i++)
+    i = 0;
+    while (i < argc - 4)
+    {
         if (pipe(pipes + i * 2) < 0)
+        {
             pipex_perror(NULL, PIPE_ERR);
+            exit(1);
+        }
+        i++;
+    }
 
-    for (i = 0; i < argc - 3; i++)
+    i = 0;
+    while (i < argc - 3)
     {
         if (i == 0)
             pipex->pid1 = fork();
@@ -90,7 +110,10 @@ static void	fork_processes(t_pipex *pipex, char **argv, char **envp, int argc)
             pipex->pid2 = fork();
 
         if ((i == 0 && pipex->pid1 < 0) || (i != 0 && pipex->pid2 < 0))
+        {
             pipex_perror(NULL, FORK_ERR);
+            exit(1);
+        }
 
         if ((i == 0 && pipex->pid1 == 0) || (i != 0 && pipex->pid2 == 0))
         {
@@ -104,16 +127,31 @@ static void	fork_processes(t_pipex *pipex, char **argv, char **envp, int argc)
             else
                 dup2(pipes[i * 2 + 1], STDOUT_FILENO);
 
-            for (int j = 0; j < 2 * (argc - 4); j++)
+            j = 0;
+            while (j < 2 * (argc - 4))
+            {
                 close(pipes[j]);
+                j++;
+            }
 
             execute_cmd(argv + 2 + i + pipex->here_doc, envp, pipex);
         }
+        i++;
     }
-    for (int j = 0; j < 2 * (argc - 4); j++)
+
+    j = 0;
+    while (j < 2 * (argc - 4))
+    {
         close(pipes[j]);
-    for (int j = 0; j < argc - 3; j++)
+        j++;
+    }
+
+    j = 0;
+    while (j < argc - 3)
+    {
         waitpid(pipex->pid2, NULL, 0);
+        j++;
+    }
 }
 
 int	main(int argc, char **argv, char **envp)

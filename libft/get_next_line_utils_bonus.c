@@ -1,0 +1,55 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   get_next_line_utils.c                              :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: abonnard <abonnard@student.42nice.fr>      +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/11/17 13:12:36 by abonnard          #+#    #+#             */
+/*   Updated: 2024/11/17 13:12:36 by abonnard         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+#include "get_next_line_bonus.h"
+
+void	ft_bzero(void *s, size_t n)
+{
+	unsigned char	*p;
+	size_t			c;
+
+	p = s;
+	c = '\0';
+	while (n-- > 0)
+	{
+		*p = (unsigned char)c;
+		p++;
+	}
+}
+
+void	*ft_calloc(size_t nmemb, size_t size)
+{
+	void	*alloc;
+	size_t	total_size;
+
+	if (nmemb == 0 || size == 0)
+		return ((void *)malloc(0));
+	total_size = nmemb * size;
+	if (total_size / nmemb != size)
+		return (NULL);
+	alloc = (void *)malloc(total_size);
+	if (!alloc)
+		return (NULL);
+	ft_bzero(((unsigned char *)alloc), (total_size));
+	return (alloc);
+}
+
+char	*ft_strchr(const char *str, int char_to_find)
+{
+	while (*str != (unsigned char)char_to_find)
+	{
+		if (!*str)
+			return (0);
+		str++;
+	}
+	return ((char *)str);
+}

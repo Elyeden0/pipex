@@ -14,7 +14,7 @@ BOX_BOTTOM = ╚═════════════════════�
 
 # Directories
 SRC_DIR  = srcs
-#BONUS_DIR = bonus
+BONUS_DIR = bonus
 OBJ_DIR  = objs
 LIBFT_DIR = libft
 
@@ -26,19 +26,22 @@ LIBS     = -L$(LIBFT_DIR) -lft
 INCLUDES = -I$(LIBFT_DIR) -Iinclude
 BONUS_INCLUDES = -Ibonus_include -I$(LIBFT_DIR)
 
-# Source files and object files
+# Source files
 SRCS     = $(SRC_DIR)/free.c \
 			$(SRC_DIR)/pipex.c \
 			$(SRC_DIR)/process.c \
 			$(SRC_DIR)/tools.c
 
-BONUS_SRCS = $(BONUS_DIR)/free.c \
-			 $(BONUS_DIR)/pipex.c \
-			 $(BONUS_DIR)/process.c \
-			 $(BONUS_DIR)/tools.c
+# Bonus source files
+BONUS_SRCS = $(BONUS_DIR)/free_bonus.c \
+			 $(BONUS_DIR)/pipex_bonus.c \
+			 $(BONUS_DIR)/process_bonus.c \
+			 $(BONUS_DIR)/tools_bonus.c
 
+# Objects files
 OBJS     = $(SRCS:$(SRC_DIR)/%.c=$(OBJ_DIR)/%.o)
 
+# Bonus object files
 BONUS_OBJS = $(BONUS_SRCS:$(BONUS_DIR)/%.c=$(OBJ_DIR)/%.o)
 
 # Output executable
