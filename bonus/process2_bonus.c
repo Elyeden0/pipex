@@ -1,48 +1,49 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   free_bonus.c                                       :+:      :+:    :+:   */
+/*   process2_bonus.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: abonnard <abonnard@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/02/12 12:27:30 by abonnard          #+#    #+#             */
-/*   Updated: 2025/02/12 15:26:32 by abonnard         ###   ########.fr       */
+/*   Created: 2025/02/14 15:15:47 by abonnard          #+#    #+#             */
+/*   Updated: 2025/02/14 16:58:55 by abonnard         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/pipex_bonus.h"
 
-void	close_pipes(t_pipex *pipex)
+void	create_pipe(int *pipe_fd)
 {
-	close(pipex->pipe[0]);
-	close(pipex->pipe[1]);
+	if (pipe(pipe_fd) < 0)
+	{
+		pipex_perror(NULL, PIPE_ERR);
+		exit(1);
+	}
 }
 
-void	free_parent(t_pipex *pipex)
+void	close_pipe(int fd)
 {
-	int	i;
-
-	i = 0;
-	close(pipex->infile);
-	close(pipex->outfile);
-	while (pipex->cmd_paths[i])
-	{
-		free(pipex->cmd_paths[i]);
-		i++;
-	}
-	free(pipex->cmd_paths);
+	close(fd);
 }
 
-void	free_child(t_pipex *pipex)
+void	wait_for_child(pid_t pid)
 {
-	int	i;
+	waitpid(pid, NULL, 0);
+}
 
-	i = 0;
-	while (pipex->cmd_args[i])
+void	dup_fds(int fd1, int fd2)
+{
+	if (dup2(fd1, fd2) < 0)
 	{
-		free(pipex->cmd_args[i]);
-		i++;
+		pipex_perror(NULL, DUP_ERR);
+		exit(1);
 	}
-	free(pipex->cmd_args);
-	free(pipex->cmd);
+}
+
+void	close_all_pipes(int *pipes, int count)
+{
+	if (count <= 0)
+		return ;
+	close_pipe(pipes[count - 1]);
+	close_all_pipes(pipes, count - 1);
 }

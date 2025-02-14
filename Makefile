@@ -36,7 +36,10 @@ SRCS     = $(SRC_DIR)/free.c \
 BONUS_SRCS = $(BONUS_DIR)/free_bonus.c \
 			 $(BONUS_DIR)/pipex_bonus.c \
 			 $(BONUS_DIR)/process_bonus.c \
-			 $(BONUS_DIR)/tools_bonus.c
+			 $(BONUS_DIR)/process2_bonus.c \
+			 $(BONUS_DIR)/process3_bonus.c \
+			 $(BONUS_DIR)/tools_bonus.c \
+			 $(BONUS_DIR)/too_much_func.c
 
 # Objects files
 OBJS     = $(SRCS:$(SRC_DIR)/%.c=$(OBJ_DIR)/%.o)

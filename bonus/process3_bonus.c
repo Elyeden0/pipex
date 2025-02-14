@@ -1,48 +1,29 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   free_bonus.c                                       :+:      :+:    :+:   */
+/*   process3_bonus.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: abonnard <abonnard@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/02/12 12:27:30 by abonnard          #+#    #+#             */
-/*   Updated: 2025/02/12 15:26:32 by abonnard         ###   ########.fr       */
+/*   Created: 2025/02/14 15:15:55 by abonnard          #+#    #+#             */
+/*   Updated: 2025/02/14 16:57:40 by abonnard         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/pipex_bonus.h"
 
-void	close_pipes(t_pipex *pipex)
+void	create_pipes_recursive(int *pipes, int argc, int index)
 {
-	close(pipex->pipe[0]);
-	close(pipex->pipe[1]);
+	if (index >= argc - 4)
+		return ;
+	create_pipe(pipes + index * 2);
+	create_pipes_recursive(pipes, argc, index + 1);
 }
 
-void	free_parent(t_pipex *pipex)
+void	wait_for_children_recursive(t_pipex *pipex, int argc, int index)
 {
-	int	i;
-
-	i = 0;
-	close(pipex->infile);
-	close(pipex->outfile);
-	while (pipex->cmd_paths[i])
-	{
-		free(pipex->cmd_paths[i]);
-		i++;
-	}
-	free(pipex->cmd_paths);
-}
-
-void	free_child(t_pipex *pipex)
-{
-	int	i;
-
-	i = 0;
-	while (pipex->cmd_args[i])
-	{
-		free(pipex->cmd_args[i]);
-		i++;
-	}
-	free(pipex->cmd_args);
-	free(pipex->cmd);
+	if (index >= argc - 3)
+		return ;
+	wait_for_child(pipex->pid2);
+	wait_for_children_recursive(pipex, argc, index + 1);
 }
