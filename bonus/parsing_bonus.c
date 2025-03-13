@@ -1,0 +1,89 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   parsing_bonus.c                                    :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: abonnard <abonnard@student.42nice.fr>      +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/01/31 13:55:34 by abonnard          #+#    #+#             */
+/*   Updated: 2025/03/13 11:56:17 by abonnard         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+#include "../include/pipex_bonus.h"
+
+int	update_count(char **path, int count)
+{
+	count = 0;
+	while (path[count])
+		count++;
+	return (count);
+}
+
+void	parsing_path(char **env, t_pipex *pipex)
+{
+	int		i;
+	int		j;
+	char	**path;
+	int		count;
+
+	i = -1;
+	path = NULL;
+	while (env[++i])
+	{
+		if (ft_strncmp("PATH=", env[i], 5) == 0)
+		{
+			path = ft_split(env[i] + 5, ':');
+			count = update_count(path, 0);
+			pipex->env = malloc(sizeof(char *) * (count + 1));
+			j = -1;
+			while (path[++j])
+			{
+				pipex->env[j] = ft_strjoin(path[j], "/");
+				free(path[j]);
+			}
+			pipex->env[j] = NULL;
+			break ;
+		}
+	}
+	free(path);
+}
+
+char	*get_cmd_path(t_pipex *pipex, char *cmd)
+{
+	int		i;
+	char	*res;
+
+	i = 0;
+	while (pipex->env[i])
+	{
+		res = ft_strjoin(pipex->env[i], cmd);
+		if (!res)
+		{
+			free(res);
+			return (NULL);
+		}
+		if (!access(res, X_OK))
+			return (res);
+		free(res);
+		i++;
+	}
+	return (NULL);
+}
+
+void	check_envp(char **envp)
+{
+	int	i;
+	int	check;
+
+	i = -1;
+	check = 0;
+	while (envp[++i])
+		if (ft_strnstr(envp[i], "PATH=", 5) && envp[i][6])
+			check = 1;
+	if (!check)
+	{
+		ft_printf("Error: The environment PATH has not been found.");
+		exit(1);
+	}
+}
